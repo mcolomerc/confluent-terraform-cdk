@@ -6,9 +6,9 @@ Example: [Confluent Terraform Provider](https://registry.terraform.io/providers/
 
 Requires [Go 1.16+](https://golang.org/doc/install) and [Terraform 0.15+](https://www.terraform.io/downloads.html)
 
-- Install Terraform CDK
+- Install Terraform CDK: `brew install cdktf`
 
-`brew install cdktf`
+- Clone this repo.
 
 - Add the Confluent Provider
 
