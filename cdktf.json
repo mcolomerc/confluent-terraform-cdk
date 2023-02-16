@@ -5,7 +5,7 @@
   "projectId": "544709cf-6af5-42a5-8529-d909d782baa9",
   "sendCrashReports": "false",
   "terraformProviders": [
-    "confluentinc/confluent@~> 1.28"
+    "confluentinc/confluent@~> 1.31"
   ],
   "terraformModules": [],
   "context": {
