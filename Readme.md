@@ -1,15 +1,16 @@
 # Confluent Terraform Provider & Terraform CDK
 
+**Stack > Create a Confluent Cloud Cluster.**
+
 Example: [Confluent Terraform Provider](https://registry.terraform.io/providers/confluentinc/confluent/latest/docs) with [Terraform CDK](https://developer.hashicorp.com/terraform/cdktf)
 
-**Stack > Create a Dedicated Cluster.**
+Requires [Go 1.16+](https://golang.org/doc/install) and [Terraform 0.15+](https://www.terraform.io/downloads.html)
 
 - Install Terraform CDK
 
 `brew install cdktf`
 
-
-- Create Terraform CDK - Golang project 
+- Create Terraform CDK - Golang project
 
 `cdktf init --template=go --local`
 
@@ -38,13 +39,51 @@ The generated code depends on jsii-runtime-go. If you haven't yet installed it, 
 ┌────────────────────────┬──────────────────┬─────────┬────────────┬──────────────────────────────────────────────────┬─────────────────┐
 │ Provider Name          │ Provider Version │ CDKTF   │ Constraint │ Package Name                                     │ Package Version │
 ├────────────────────────┼──────────────────┼─────────┼────────────┼──────────────────────────────────────────────────┼─────────────────┤
-│ confluentinc/confluent │ 1.28.0           │         │ ~> 1.28    │                                                  │                 │
+│ confluentinc/confluent │ 1.31.0           │         │ ~> 1.31    │                                                  │                 │
 └────────────────────────┴──────────────────┴─────────┴────────────┴──────────────────────────────────────────────────┴─────────────────┘
 ```
 
-- Deploy: `cdktf deploy`
+---
 
-- Destroy: `cdktf destroy`
+Configure the Confluent Provider, provide Confluent Cloud credentials
+
+Using tfvars file:  **sample.tfvars**
+
+```hcl
+confluent_cloud_api_key="CONFLUENT_CLOUD_API_KEY" 
+
+confluent_cloud_api_secret="CONFLUENT_CLOUD_API_SECRET"
+```
+
+**Deploy:** `cdktf deploy --var-file=./sample.tfvars` 
+
+Alternatives:
+
+- Define environment variables: `TF_VAR_imageId=ami-abcde123`
+- `--var` CLI option: `cdktf deploy --var='imageId=ami-abcde123'`
+- `--var-file` CLI option: `cdktf deploy --var-file=/path/to/variables.tfvars`
+
+
+**Destroy** `cdktf destroy`
+
+## Stack Configuration Options
+
+Create a `config.yaml` file with the following options:
+
+```yaml
+environment:  #confluent cloud environment id
+# new cluster configuration
+cluster: 
+  cloud: # GCP, AWS or Azure
+  region: # cloud region
+  display_name: # cluster name
+  availability: # SINGLE_ZONE or MULTI_ZONE - basic are SINGLE_ZONE only. 
+  type: # basic, standard or dedicated
+  cku: # optional: for dedicated clusters, default = 1
+  serviceAccount: # optional: create a cluster API_KEY for the given service account name.
+```
+
+---
 
 ## Terraform CDK help
 
@@ -67,4 +106,4 @@ Your cdktf go project is ready!
   Destroy:
     `cdktf destroy [stack]` Destroy the given stack
 
-  Learn more about using modules and providers https://cdk.tf/modules-and-providers
+  Learn more about using modules and providers <https://cdk.tf/modules-and-providers>
