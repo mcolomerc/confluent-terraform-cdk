@@ -10,10 +10,6 @@ Requires [Go 1.16+](https://golang.org/doc/install) and [Terraform 0.15+](https:
 
 `brew install cdktf`
 
-- Create Terraform CDK - Golang project
-
-`cdktf init --template=go --local`
-
 - Add the Confluent Provider
 
 `cdktf provider add confluentinc/confluent`
@@ -86,6 +82,10 @@ cluster:
 ---
 
 ## Terraform CDK help
+
+- Create Terraform CDK - Golang project
+
+`cdktf init --template=go --local`
 
 Your cdktf go project is ready!
 
