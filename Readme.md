@@ -99,14 +99,12 @@ cluster:
     secret: # source cluster api secret
 ```
 
-Destroy: 
+* Destroy Cluster Link: 
+
+Promote mirrors: 
 
 `confluent kafka mirror promote <topic_1> <topic_2> ... <topic_n>  --link <link_name> --cluster <cluster_id>`
-
-`confluent kafka link delete <link_name> --cluster <cluster_id>`
-
-
-
+ 
 
 ## Terraform CDK help
 
