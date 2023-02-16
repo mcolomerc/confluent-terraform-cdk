@@ -4,8 +4,13 @@ cluster:
   cloud:  # GCP, AWS or Azure
   region:  # cloud region
   display_name:  # cluster name
-  availability:  # SINGLE_ZONE or MULTI_ZONE - basic are SINGLE_ZONE only. 
+  availability:  # SINGLE_ZONE or MULTI_ZONE - default: SingleZone - basic are SINGLE_ZONE only. 
   type:  # basic, standard or dedicated
   cku: # optional for dedicated cluster, default = 1
   serviceAccount:  # optional: create a cluster API_KEY for the SACC.
+   # when using source mirror, destination is a dedicated cluster
+  link:
+    source: # source cluster id 
+    key: # source cluster api key 
+    secret: # source cluster api secret
   

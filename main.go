@@ -2,6 +2,8 @@ package main
 
 import (
 	"cdk.tf/go/stack/cluster"
+	"cdk.tf/go/stack/config"
+	"cdk.tf/go/stack/link"
 	"cdk.tf/go/stack/provider"
 	"github.com/hashicorp/terraform-cdk-go/cdktf"
 )
@@ -18,7 +20,13 @@ func main() {
 	provider.NewConfluentProvider(stack)
 
 	// Cluster
-	cluster.NewKafkaCluster(stack, &name)
+	kafkaCluster := cluster.NewKafkaCluster(stack, &name)
+
+	// Cluster Link
+	if config.GetConfing().Link != (config.Link{}) {
+		lname := "confluent-cloud-kafka-cluster-link"
+		link.CreateClusterLink(*kafkaCluster, stack, &lname)
+	}
 
 	app.Synth()
 
