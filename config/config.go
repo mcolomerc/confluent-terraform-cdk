@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 
@@ -15,7 +16,15 @@ type Cluster struct {
 	Type           Type         `yaml:"type"`
 	Cku            int          `yaml:"cku"`
 	ServiceAccount string       `yaml:"serviceAccount"`
+	Link           `yaml:"link"`
 }
+
+type Link struct {
+	Source string `yaml:"source"`
+	Key    string `yaml:"key"`
+	Secret string `yaml:"secret"`
+}
+
 type Config struct {
 	Environment string `yaml:"environment"`
 	Cluster     `yaml:"cluster"`
@@ -25,12 +34,14 @@ var config *Config
 
 func GetConfing() *Config {
 	if config == nil {
+		log.Println("Building new config")
 		config = NewConfing()
 	}
 	return config
 }
 
 func NewConfing() *Config {
+	log.Println("Building config")
 	c := &Config{
 		Environment: "dev",
 		Cluster: Cluster{
@@ -40,6 +51,7 @@ func NewConfing() *Config {
 			Availability: SingleZone,
 			Type:         Basic,
 			Cku:          0,
+			Link:         Link{},
 		},
 	}
 	yamlFile, err := ioutil.ReadFile("config.yaml")
@@ -51,13 +63,15 @@ func NewConfing() *Config {
 		log.Fatalf("Unmarshal: %v", err)
 	}
 	if c.Validate() {
+		fmt.Println("validation -- ", c)
 		return c
 	} else {
+		log.Println("Invalid config")
 		return nil
 	}
 }
 
-func (c Config) Validate() bool {
+func (c *Config) Validate() bool {
 	if c.Cluster.Type != Dedicated && c.Cluster.Type != Basic && c.Cluster.Type != Standard {
 		log.Println("Invalid cluster type. Must be basic, standard or dedicated")
 		return false
@@ -68,16 +82,32 @@ func (c Config) Validate() bool {
 	}
 	if c.Cluster.Availability != SingleZone && c.Cluster.Availability != MultiZone {
 		log.Println("Invalid Availability type")
-		return false
+		c.Cluster.Availability = SingleZone
+	}
+
+	if c.Cluster.Type == Basic && c.Cluster.Availability != SingleZone {
+		log.Println("Basic cluster must be single zone")
+		c.Cluster.Availability = SingleZone
+	}
+	if c.Link != (Link{}) {
+		c.Cluster.Type = Dedicated
+		if c.Link.Source == "" {
+			log.Println("Link source must be set")
+			return false
+		}
+		if c.Link.Key == "" {
+			log.Println("Link key must be set")
+			return false
+		}
+		if c.Link.Secret == "" {
+			log.Println("Link secret must be set")
+			return false
+		}
 	}
 	if c.Cluster.Type == Dedicated && c.Cluster.Cku == 0 {
 		log.Println("Dedicated cluster must have CKU set")
 		log.Println("Setting CKU to 1")
 		c.Cluster.Cku = 1
-	}
-	if c.Cluster.Type == Basic && c.Cluster.Availability != SingleZone {
-		log.Println("Basic cluster must be single zone")
-		c.Cluster.Availability = SingleZone
 	}
 	return true
 }

@@ -59,6 +59,7 @@ Alternatives:
 - `--var` CLI option: `cdktf deploy --var='imageId=ami-abcde123'`
 - `--var-file` CLI option: `cdktf deploy --var-file=/path/to/variables.tfvars`
 
+Deploys all stacks & auto approve: `cdktf deploy --auto-approve '*'`  
 
 **Destroy** `cdktf destroy`
 
@@ -80,6 +81,32 @@ cluster:
 ```
 
 ---
+
+Mirror a source Confluent Cloud cluster with Cluster Link 
+
+```yaml
+environment: #confluent cloud environment id
+# new cluster configuration
+cluster: 
+  cloud: # GCP, AWS or Azure
+  region: # cloud region
+  display_name: # cluster name 
+  serviceAccount: # optional: create a cluster API_KEY for the SACC.
+  # when using source mirror, destination is a dedicated cluster
+  link:
+    source: # source cluster id 
+    key: # source cluster api key 
+    secret: # source cluster api secret
+```
+
+Destroy: 
+
+`confluent kafka mirror promote <topic_1> <topic_2> ... <topic_n>  --link <link_name> --cluster <cluster_id>`
+
+`confluent kafka link delete <link_name> --cluster <cluster_id>`
+
+
+
 
 ## Terraform CDK help
 
@@ -107,3 +134,7 @@ Your cdktf go project is ready!
     `cdktf destroy [stack]` Destroy the given stack
 
   Learn more about using modules and providers <https://cdk.tf/modules-and-providers>
+
+
+
+
